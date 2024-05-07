@@ -48,6 +48,9 @@ const PlasmoOverlay = () => {
 
   React.useEffect(() => {
     initDatat()
+  }, [selectedText])
+
+  React.useEffect(() => {
     document.addEventListener("mouseup", handleMouseUp)
     return () => {
       document.removeEventListener("mouseup", handleMouseUp)

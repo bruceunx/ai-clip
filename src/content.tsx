@@ -1,10 +1,11 @@
 import cssText from "data-text:~style.css"
 import type { PlasmoCSConfig } from "plasmo"
+import * as React from "react"
 
-import { CountButton } from "~features/count-button"
+import DraggablePanel from "~components/Panel"
 
 export const config: PlasmoCSConfig = {
-  matches: ["https://www.plasmo.com/*"]
+  all_frames: true
 }
 
 export const getStyle = () => {
@@ -14,11 +15,50 @@ export const getStyle = () => {
 }
 
 const PlasmoOverlay = () => {
+  const [selectedText, setSelectedText] = React.useState<string>("")
+  const [range, setRange] = React.useState({ x: 0, y: 0 })
+  const [showPanel, setShowPanel] = React.useState<boolean>(false)
+
+  let previewText = ""
+  const handleMouseUp = (event: MouseEvent) => {
+    if (showPanel) return
+    const selection = window.getSelection()
+    const text = selection.toString()
+    if (text !== "" && text !== previewText) {
+      previewText = text
+      setSelectedText(text)
+      setRange({ x: event.clientX, y: event.clientY - 50 })
+    } else {
+      setSelectedText("")
+      previewText = ""
+    }
+  }
+  React.useEffect(() => {
+    document.addEventListener("mouseup", handleMouseUp)
+
+    return () => {
+      document.removeEventListener("mouseup", handleMouseUp)
+    }
+  }, [])
   return (
-    <div className="plasmo-z-50 plasmo-flex plasmo-fixed plasmo-top-32 plasmo-right-8">
-      <CountButton />
-    </div>
+    <>
+      <div
+        className="plasmo-z-50 plasmo-fixed"
+        style={{
+          left: range.x,
+          top: range.y,
+          display: selectedText !== "" ? "block" : "none"
+        }}>
+        <button onClick={() => setShowPanel(true)}>click me</button>
+      </div>
+      {showPanel && (
+        <DraggablePanel
+          x={range.x}
+          y={range.y}
+          onClose={() => setShowPanel(false)}
+        />
+      )}
+    </>
   )
 }
-
 export default PlasmoOverlay

@@ -2,31 +2,15 @@ import * as React from "react"
 
 import "~style.css"
 
-import { Storage } from "@plasmohq/storage"
+import { useStorage } from "@plasmohq/storage/hook"
 
 function IndexPopup() {
-  const storage = new Storage()
-  const [apiKey, setApiKey] = React.useState<string>("")
-  const [url, setUrl] = React.useState<string>("")
-  const [selectedValue, setSelectedValue] = React.useState("translate")
-
-  React.useEffect(() => {
-    ;(async function () {
-      const data: any = await storage.get("data")
-      if (data !== undefined) {
-        setApiKey(data.apiKey)
-        setUrl(data.url)
-        setSelectedValue(data.selectedValue)
-      }
-    })()
-  }, [])
+  const [url, setUrl] = useStorage("url", "")
+  const [apiKey, setApiKey] = useStorage("apiKey", "")
+  const [type, setType] = useStorage("type", "translate")
 
   const handleRadioChange = (event: any) => {
-    setSelectedValue(event.target.value)
-  }
-
-  const handleSave = async () => {
-    await storage.set("data", { apiKey, selectedValue, url })
+    setType(event.target.value)
   }
 
   return (
@@ -65,7 +49,7 @@ function IndexPopup() {
               className="plasmo-align-middle plasmo-mr-1"
               type="radio"
               value="translate"
-              checked={selectedValue === "translate"}
+              checked={type === "translate"}
               onChange={handleRadioChange}
             />
             translate
@@ -75,17 +59,12 @@ function IndexPopup() {
               className="plasmo-align-middle plasmo-mr-1"
               type="radio"
               value="summarize"
-              checked={selectedValue === "summarize"}
+              checked={type === "summarize"}
               onChange={handleRadioChange}
             />
             summarize
           </label>
         </div>
-        <button
-          className="plasmo-bg-teal-700 plasmo-text-white plasmo-p-1 plasmo-w-full hover:plasmo-bg-teal-600 active:plasmo-bg-teal-300"
-          onClick={handleSave}>
-          save
-        </button>
       </div>
     </div>
   )

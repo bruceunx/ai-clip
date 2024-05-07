@@ -1,10 +1,15 @@
 import * as React from "react"
 
+import { useStorage } from "@plasmohq/storage/hook"
+
 import { getData } from "~utils/llm_api"
 
 import useClickOutside from "../hooks/useClickOutside"
 
-function DraggablePanel({ x, y, query, setting, onClose }) {
+function DraggablePanel({ x, y, query, onClose }) {
+  const [url] = useStorage<string>("url")
+  const [apiKey] = useStorage<string>("apiKey")
+  const [type] = useStorage<string>("type")
   const panelRef = useClickOutside(onClose)
   const [position, setPosition] = React.useState({ x, y })
   const [result, setResult] = React.useState<string>("")
@@ -30,10 +35,11 @@ function DraggablePanel({ x, y, query, setting, onClose }) {
   }, [result])
 
   React.useEffect(() => {
-    if (setting === null) onClose()
+    if (url === undefined) return
+    if (url === "") onClose()
     ;(async function () {
       if (query === "") return
-      let source = await getData(query, setting)
+      let source = await getData(query, url, apiKey, type)
       source.addEventListener("message", (e: any) => {
         if (e.data != "[DONE]") {
           let payload = JSON.parse(e.data)
@@ -48,7 +54,7 @@ function DraggablePanel({ x, y, query, setting, onClose }) {
       })
       source.stream()
     })()
-  }, [])
+  }, [url, apiKey, type])
 
   return (
     <div
@@ -61,9 +67,7 @@ function DraggablePanel({ x, y, query, setting, onClose }) {
       <div
         onMouseDown={handleDragStart}
         className="plasmo-cursor-move plasmo-bg-amber-500 plasmo-rounded-t-lg">
-        <p className="plasmo-text-center plasmo-text-white">
-          AI Clip - {setting.selectedValue}
-        </p>
+        <p className="plasmo-text-center plasmo-text-white">AI Clip - {type}</p>
       </div>
       <div className="plasmo-cursor-text plasmo-p-2">
         <p>{result}</p>

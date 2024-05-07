@@ -61,7 +61,9 @@ function DraggablePanel({ x, y, query, setting, onClose }) {
       <div
         onMouseDown={handleDragStart}
         className="plasmo-cursor-move plasmo-bg-amber-500 plasmo-rounded-t-lg">
-        <p className="plasmo-text-center plasmo-text-white">AI Clip</p>
+        <p className="plasmo-text-center plasmo-text-white">
+          AI Clip - {setting.selectedValue}
+        </p>
       </div>
       <div className="plasmo-cursor-text plasmo-p-2">
         <p>{result}</p>

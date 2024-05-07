@@ -1,6 +1,7 @@
 import cssText from "data-text:~style.css"
 import type { PlasmoCSConfig } from "plasmo"
 import * as React from "react"
+import Clip from "react:../assets/clip.svg"
 
 import DraggablePanel from "~components/Panel"
 
@@ -27,7 +28,7 @@ const PlasmoOverlay = () => {
     if (text !== "" && text !== previewText) {
       previewText = text
       setSelectedText(text)
-      setRange({ x: event.clientX, y: event.clientY - 50 })
+      setRange({ x: event.clientX, y: event.clientY - 40 })
     } else {
       setSelectedText("")
       previewText = ""
@@ -49,7 +50,9 @@ const PlasmoOverlay = () => {
           top: range.y,
           display: selectedText !== "" ? "block" : "none"
         }}>
-        <button onClick={() => setShowPanel(true)}>click me</button>
+        <button onClick={() => setShowPanel(true)}>
+          <Clip className="plasmo-w-5 plasmo-h-5" />
+        </button>
       </div>
       {showPanel && (
         <DraggablePanel

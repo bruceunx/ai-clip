@@ -2,7 +2,6 @@ import * as React from "react"
 
 const useClickOutside = (callback: Function) => {
   const ref = React.useRef<HTMLDivElement>(null)
-  let count = 0
 
   React.useEffect(() => {
     const handleClick = (event: MouseEvent) => {
@@ -14,8 +13,7 @@ const useClickOutside = (callback: Function) => {
           event.clientY < recSize.top ||
           event.clientY > recSize.bottom
         ) {
-          if (count > 0) callback()
-          count++
+          callback()
         }
       }
     }

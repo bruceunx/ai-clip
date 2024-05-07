@@ -25,21 +25,17 @@ function DraggablePanel({ x, y, onClose }) {
   return (
     <div
       ref={panelRef}
-      className="plasmo-text-sky-500 plasmo-p-10 plasmo-fixed"
+      className="plasmo-fixed plasmo-flex plasmo-flex-col plasmo-w-64 plasmo-border plasmo-border-gray-400 plasmo-rounded-lg plasmo-shadow-lg plasmo-bg-white plasmo-z-50 plasmo-text-gray-800"
       style={{
         left: position.x + "px",
         top: position.y + "px"
       }}>
-      <div onMouseDown={handleDragStart} className="plasmo-cursor-move">
-        <p>header</p>
-      </div>
       <div
-        style={{
-          width: "100%",
-          height: "90%",
-          paddingTop: "10%",
-          cursor: "text"
-        }}>
+        onMouseDown={handleDragStart}
+        className="plasmo-cursor-move plasmo-bg-amber-500 plasmo-rounded-t-lg">
+        <p className="plasmo-text-center plasmo-text-white">header</p>
+      </div>
+      <div className="plasmo-cursor-text plasmo-p-2">
         <p>drag me</p>
       </div>
     </div>

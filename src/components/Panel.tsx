@@ -1,10 +1,14 @@
 import * as React from "react"
 
+import { getGroqData } from "~utils/groq_api"
+
 import useClickOutside from "../hooks/useClickOutside"
 
-function DraggablePanel({ x, y, onClose }) {
+function DraggablePanel({ x, y, query, apiKey, onClose }) {
   const panelRef = useClickOutside(onClose)
   const [position, setPosition] = React.useState({ x, y })
+  const [result, setResult] = React.useState<string>("")
+  const resultRef = React.useRef<string>()
 
   const handleDragStart = (e: any) => {
     const initialX = e.clientX - panelRef.current.offsetLeft
@@ -21,6 +25,30 @@ function DraggablePanel({ x, y, onClose }) {
       document.removeEventListener("mousemove", handleMouseMove)
     })
   }
+  React.useEffect(() => {
+    resultRef.current = result
+  }, [result])
+
+  React.useEffect(() => {
+    ;(async function () {
+      if (query === "") return
+      let source = await getGroqData(query, apiKey)
+      source.addEventListener("message", (e: any) => {
+        console.log(e.data)
+        if (e.data != "[DONE]") {
+          let payload = JSON.parse(e.data)
+          let text = payload.choices[0].delta.content
+          if (text !== undefined) {
+            resultRef.current = resultRef.current + text
+            setResult(resultRef.current)
+          }
+        } else {
+          source.close()
+        }
+      })
+      source.stream()
+    })()
+  }, [])
 
   return (
     <div
@@ -33,10 +61,10 @@ function DraggablePanel({ x, y, onClose }) {
       <div
         onMouseDown={handleDragStart}
         className="plasmo-cursor-move plasmo-bg-amber-500 plasmo-rounded-t-lg">
-        <p className="plasmo-text-center plasmo-text-white">header</p>
+        <p className="plasmo-text-center plasmo-text-white">AI Clip</p>
       </div>
       <div className="plasmo-cursor-text plasmo-p-2">
-        <p>drag me</p>
+        <p>{result}</p>
       </div>
     </div>
   )

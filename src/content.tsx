@@ -3,6 +3,8 @@ import type { PlasmoCSConfig } from "plasmo"
 import * as React from "react"
 import Clip from "react:../assets/clip.svg"
 
+import { Storage } from "@plasmohq/storage"
+
 import DraggablePanel from "~components/Panel"
 
 export const config: PlasmoCSConfig = {
@@ -16,9 +18,12 @@ export const getStyle = () => {
 }
 
 const PlasmoOverlay = () => {
+  const storage = new Storage()
   const [selectedText, setSelectedText] = React.useState<string>("")
   const [range, setRange] = React.useState({ x: 0, y: 0 })
   const [showPanel, setShowPanel] = React.useState<boolean>(false)
+  const [apiKey, setApiKey] = React.useState<string>("")
+  const [query, setQuery] = React.useState<string>("")
 
   let previewText = ""
   const handleMouseUp = (event: MouseEvent) => {
@@ -28,6 +33,7 @@ const PlasmoOverlay = () => {
     if (text !== "" && text !== previewText) {
       previewText = text
       setSelectedText(text)
+      setQuery(text)
       setRange({ x: event.clientX, y: event.clientY - 40 })
     } else {
       setSelectedText("")
@@ -35,6 +41,11 @@ const PlasmoOverlay = () => {
     }
   }
   React.useEffect(() => {
+    ;(async function () {
+      const api = await storage.get("api_key")
+      if (api !== undefined) setApiKey(api)
+    })()
+
     document.addEventListener("mouseup", handleMouseUp)
 
     return () => {
@@ -58,6 +69,8 @@ const PlasmoOverlay = () => {
         <DraggablePanel
           x={range.x}
           y={range.y}
+          query={query}
+          apiKey={apiKey}
           onClose={() => setShowPanel(false)}
         />
       )}

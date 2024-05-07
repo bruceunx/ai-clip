@@ -41,6 +41,11 @@ const PlasmoOverlay = () => {
     }
   }
 
+  const handleClose = () => {
+    setShowPanel(false)
+    setSelectedText("")
+    setQuery("")
+  }
   const initDatat = async () => {
     const data = await storage.get("data")
     setSetting(() => data)
@@ -76,7 +81,7 @@ const PlasmoOverlay = () => {
           y={range.y}
           query={query}
           setting={setting}
-          onClose={() => setShowPanel(false)}
+          onClose={handleClose}
         />
       )}
     </>

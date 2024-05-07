@@ -22,8 +22,8 @@ const PlasmoOverlay = () => {
   const [selectedText, setSelectedText] = React.useState<string>("")
   const [range, setRange] = React.useState({ x: 0, y: 0 })
   const [showPanel, setShowPanel] = React.useState<boolean>(false)
-  const [apiKey, setApiKey] = React.useState<string>("")
   const [query, setQuery] = React.useState<string>("")
+  const [setting, setSetting] = React.useState<any>(null)
 
   let previewText = ""
   const handleMouseUp = (event: MouseEvent) => {
@@ -40,18 +40,20 @@ const PlasmoOverlay = () => {
       previewText = ""
     }
   }
+
+  const initDatat = async () => {
+    const data = await storage.get("data")
+    setSetting(() => data)
+  }
+
   React.useEffect(() => {
-    ;(async function () {
-      const api = await storage.get("api_key")
-      if (api !== undefined) setApiKey(api)
-    })()
-
+    initDatat()
     document.addEventListener("mouseup", handleMouseUp)
-
     return () => {
       document.removeEventListener("mouseup", handleMouseUp)
     }
   }, [])
+
   return (
     <>
       <div
@@ -70,7 +72,7 @@ const PlasmoOverlay = () => {
           x={range.x}
           y={range.y}
           query={query}
-          apiKey={apiKey}
+          setting={setting}
           onClose={() => setShowPanel(false)}
         />
       )}

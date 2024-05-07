@@ -1,10 +1,10 @@
 import * as React from "react"
 
-import { getGroqData } from "~utils/groq_api"
+import { getData } from "~utils/llm_api"
 
 import useClickOutside from "../hooks/useClickOutside"
 
-function DraggablePanel({ x, y, query, apiKey, onClose }) {
+function DraggablePanel({ x, y, query, setting, onClose }) {
   const panelRef = useClickOutside(onClose)
   const [position, setPosition] = React.useState({ x, y })
   const [result, setResult] = React.useState<string>("")
@@ -30,11 +30,11 @@ function DraggablePanel({ x, y, query, apiKey, onClose }) {
   }, [result])
 
   React.useEffect(() => {
+    if (setting === null) onClose()
     ;(async function () {
       if (query === "") return
-      let source = await getGroqData(query, apiKey)
+      let source = await getData(query, setting)
       source.addEventListener("message", (e: any) => {
-        console.log(e.data)
         if (e.data != "[DONE]") {
           let payload = JSON.parse(e.data)
           let text = payload.choices[0].delta.content

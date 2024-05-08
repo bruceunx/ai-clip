@@ -1,19 +1,21 @@
 import { SSE } from "sse.js"
 
-import { Prompts } from "./prompt"
+import { getPrompt } from "./prompt"
 
 export const getData = async (
   query: string,
   url: string,
   apiKey: string,
-  type: string
+  type: string,
+  lang: string,
+  modelName: string
 ) => {
   const data = {
-    model: "llama3-8b-8192",
+    model: modelName,
     messages: [
       {
         role: "system",
-        content: Prompts[type]
+        content: getPrompt(type, lang)
       },
       {
         role: "user",

@@ -10,9 +10,13 @@ function DraggablePanel({ x, y, query, onClose }) {
   const [url] = useStorage<string>("url")
   const [apiKey] = useStorage<string>("apiKey")
   const [type] = useStorage<string>("type")
+  const [lang] = useStorage<string>("targetLan")
+  const [modelName] = useStorage<string>("modelName")
+
   const panelRef = useClickOutside(onClose)
   const [position, setPosition] = React.useState({ x, y })
   const [result, setResult] = React.useState<string>("")
+  const [warning, setWarning] = React.useState<string>("")
   const resultRef = React.useRef<string>()
 
   const handleDragStart = (e: any) => {
@@ -35,11 +39,19 @@ function DraggablePanel({ x, y, query, onClose }) {
   }, [result])
 
   React.useEffect(() => {
+    setWarning("")
     if (url === undefined) return
-    if (url === "") onClose()
+    if (url === "" || apiKey === "" || modelName === "") {
+      setWarning("Missing api information!")
+      return
+    }
+    if (query.split(" ").length < 2) {
+      setWarning("Please select more than one word!")
+      return
+    }
     ;(async function () {
       if (query === "") return
-      let source = await getData(query, url, apiKey, type)
+      let source = await getData(query, url, apiKey, type, lang, modelName)
       source.addEventListener("message", (e: any) => {
         if (e.data != "[DONE]") {
           let payload = JSON.parse(e.data)
@@ -52,9 +64,14 @@ function DraggablePanel({ x, y, query, onClose }) {
           source.close()
         }
       })
+      source.addEventListener("error", (e: any) => {
+        let error = JSON.parse(e.data)
+        setWarning(error.error.message)
+        source.close()
+      })
       source.stream()
     })()
-  }, [url, apiKey, type])
+  }, [url, apiKey, type, lang, modelName])
 
   return (
     <div
@@ -71,6 +88,7 @@ function DraggablePanel({ x, y, query, onClose }) {
       </div>
       <div className="plasmo-cursor-text plasmo-p-2">
         <p>{result}</p>
+        {warning !== "" && <p className="plasmo-text-red-700">{warning}</p>}
       </div>
     </div>
   )

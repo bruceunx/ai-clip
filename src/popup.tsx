@@ -7,7 +7,12 @@ import { useStorage } from "@plasmohq/storage/hook"
 function IndexPopup() {
   const [url, setUrl] = useStorage("url", "")
   const [apiKey, setApiKey] = useStorage("apiKey", "")
+  const [modelName, setModelName] = useStorage("modelName", "")
   const [type, setType] = useStorage("type", "translate")
+  const [targetLan, setTargetLan] = useStorage(
+    "targetLan",
+    "Simplified Chinese"
+  )
 
   const handleRadioChange = (event: any) => {
     setType(event.target.value)
@@ -31,7 +36,7 @@ function IndexPopup() {
             className="plasmo-w-3/4 plasmo-border plasmo-border-gray-500 plasmo-rounded-md plasmo-px-1"
             type="text"
             value={url}
-            onChange={(e) => setUrl(e.target.value)}
+            onChange={(e) => setUrl(e.target.value.trim())}
           />
         </div>
         <div className="plasmo-flex plasmo-flex-row plasmo-justify-between">
@@ -40,7 +45,16 @@ function IndexPopup() {
             className="plasmo-w-3/4 plasmo-border plasmo-border-gray-500 plasmo-rounded-md plasmo-px-1"
             type="text"
             value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
+            onChange={(e) => setApiKey(e.target.value.trim())}
+          />
+        </div>
+        <div className="plasmo-flex plasmo-flex-row plasmo-justify-between">
+          <p>Model_Name:</p>
+          <input
+            className="plasmo-w-3/4 plasmo-border plasmo-border-gray-500 plasmo-rounded-md plasmo-px-1"
+            type="text"
+            value={modelName}
+            onChange={(e) => setModelName(e.target.value.trim())}
           />
         </div>
         <div className="plasmo-flex plasmo-flex-row plasmo-w-full plasmo-justify-evenly plasmo-align-middle">
@@ -64,6 +78,20 @@ function IndexPopup() {
             />
             summarize
           </label>
+        </div>
+        <div className="plasmo-flex plasmo-flex-row plasmo-justify-evenly">
+          <label>Target Language:</label>
+          <select
+            className="plasmo-border pla-smo-border-gray-500 plasmo-rounded-md plasmo-px-1 plasmo-w-1/2"
+            value={targetLan}
+            onChange={(e) => setTargetLan(e.target.value)}>
+            <option value="Simplified Chinese">Simplified Chinese</option>
+            <option value="Traditional Chinese">Traditional Chinese</option>
+            <option value="English">English</option>
+            <option value="Japanese">Japanese</option>
+            <option value="Spanish">Spanish</option>
+            <option value="French">French</option>
+          </select>
         </div>
       </div>
     </div>

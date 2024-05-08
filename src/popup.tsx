@@ -20,14 +20,14 @@ function IndexPopup() {
 
   return (
     <div className="plasmo-bg-gray-100 plasmo-w-80 plasmo-flex-col plasmo-text-gray-700">
-      <h1 className="plasmo-text-md plasmo-p-2 plasmo-text-center plasmo-bg-teal-800 plasmo-text-white">
+      <h1 className="plasmo-text-md plasmo-p-2 plasmo-text-center plasmo-bg-amber-500 plasmo-text-white">
         AI-Clip Settings
       </h1>
-      <p className="plasmo-text-small plasmo-text-green-700 plasmo-p-1">
+      <p className="plasmo-text-small plasmo-text-amber-700 plasmo-p-1">
         Just add url and api key to use AI-Clip, use fast models not some pricey
-        models, Support OpenAI API like gpt-3.5, llama-8b from groq and etc,
-        it's much wasterful to just translate single word with llms. Please
-        translate with sentence or paragraph.
+        models, like gpt-3.5 from OpenAI, llama-8b from groq and etc, it's much
+        wasterful to just translate single word with llms. Please translate with
+        sentence or paragraph.
       </p>
       <div className="plasmo-flex-col plasmo-space-y-2 plasmo-p-2 plasmo-justify-center plasmo-align-middle">
         <div className="plasmo-flex plasmo-flex-row plasmo-justify-between">

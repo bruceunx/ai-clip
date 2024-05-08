@@ -52,18 +52,19 @@ const PlasmoOverlay = () => {
 
   return (
     <>
-      <div
-        className="plasmo-z-50 plasmo-fixed"
-        style={{
-          left: range.x,
-          top: range.y,
-          display: selectedText !== "" ? "block" : "none"
-        }}>
-        <button onClick={() => setShowPanel(true)}>
-          <Clip className="plasmo-w-5 plasmo-h-5" />
-        </button>
-      </div>
-      {showPanel && (
+      {!showPanel ? (
+        <div
+          className="plasmo-z-50 plasmo-fixed"
+          style={{
+            left: range.x,
+            top: range.y,
+            display: selectedText !== "" ? "block" : "none"
+          }}>
+          <button onClick={() => setShowPanel(true)}>
+            <Clip className="plasmo-w-5 plasmo-h-5" />
+          </button>
+        </div>
+      ) : (
         <DraggablePanel
           x={range.x}
           y={range.y}

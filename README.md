@@ -1,6 +1,8 @@
 # AI Clip
 
-![AI-Clip](./assets/icon.png)
+<p align="center">
+  <img width="100" height="100" src="./assets/icon.png" />
+</p>
 
 ## Description
 

@@ -26,6 +26,7 @@ const PlasmoOverlay = () => {
     if (showPanel) return
     const selection = window.getSelection()
     const text = selection.toString()
+    if (text.split(" ").length < 3) return
     if (text !== "" && text !== previewText) {
       previewText = text
       setSelectedText(text)

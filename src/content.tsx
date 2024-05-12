@@ -32,6 +32,7 @@ const PlasmoOverlay = () => {
   }
 
   let previewText = ""
+  let timeoutId = undefined
   const handleMouseUp = (event: MouseEvent) => {
     if (showPanel) return
     const selection = window.getSelection()
@@ -39,11 +40,12 @@ const PlasmoOverlay = () => {
     if (text.split(" ").length < 3) return
 
     if (text !== "" && text !== previewText) {
+      clearTimeout(timeoutId)
       previewText = text
       setSelectedText(text)
       setQuery(text)
       setRange({ x: event.clientX, y: event.clientY - 40 })
-      setTimeout(clearSelection, 3000)
+      timeoutId = setTimeout(clearSelection, 3000)
     } else {
       setSelectedText("")
       previewText = ""
@@ -52,8 +54,7 @@ const PlasmoOverlay = () => {
 
   const handleClose = () => {
     setShowPanel(false)
-    setSelectedText("")
-    setQuery("")
+    clearSelection()
   }
 
   React.useEffect(() => {

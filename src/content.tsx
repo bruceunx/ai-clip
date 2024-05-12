@@ -21,6 +21,16 @@ const PlasmoOverlay = () => {
   const [showPanel, setShowPanel] = React.useState<boolean>(false)
   const [query, setQuery] = React.useState<string>("")
 
+  const clearSelection = () => {
+    var selection = window.getSelection()
+    if (selection.rangeCount > 0) {
+      selection.removeAllRanges()
+    }
+    setSelectedText("")
+    setQuery("")
+    previewText = ""
+  }
+
   let previewText = ""
   const handleMouseUp = (event: MouseEvent) => {
     if (showPanel) return
@@ -33,6 +43,7 @@ const PlasmoOverlay = () => {
       setSelectedText(text)
       setQuery(text)
       setRange({ x: event.clientX, y: event.clientY - 40 })
+      setTimeout(clearSelection, 3000)
     } else {
       setSelectedText("")
       previewText = ""

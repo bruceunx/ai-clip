@@ -61,7 +61,6 @@ export const onlyTranslate = async (
   }
 
   const data = { target_lang: langMap[lang], text: query }
-  console.log(newUrl, data)
 
   const res = await fetch(newUrl, {
     method: "POST",

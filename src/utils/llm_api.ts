@@ -4,7 +4,11 @@ import { getPrompt } from "./prompt"
 
 const langMap = {
   "Simplified Chinese": "ZH",
-  English: "EN"
+  "Traditional Chinese": "ZH",
+  English: "EN",
+  Japanese: "JA",
+  French: "FR",
+  Spanish: "ES"
 }
 
 export const getData = async (
@@ -46,14 +50,20 @@ export const onlyTranslate = async (
   token: string,
   lang: string
 ) => {
-  const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
+  let headers = {
+    "Content-Type": "application/json"
+  }
+  let newUrl = url
+  if (!url.includes("deepl")) {
+    newUrl = `${url}?token=${token}`
+  } else {
+    headers["Authorization"] = `Bearer ${token}`
   }
 
   const data = { target_lang: langMap[lang], text: query }
+  console.log(newUrl, data)
 
-  const res = await fetch(url, {
+  const res = await fetch(newUrl, {
     method: "POST",
     headers: headers,
     body: JSON.stringify(data)

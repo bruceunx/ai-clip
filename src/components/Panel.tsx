@@ -2,7 +2,7 @@ import * as React from "react"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
-import { getData } from "~utils/llm_api"
+import { getData, onlyTranslate } from "~utils/llm_api"
 
 import useClickOutside from "../hooks/useClickOutside"
 
@@ -12,6 +12,10 @@ function DraggablePanel({ x, y, query, onClose }) {
   const [type] = useStorage<string>("type")
   const [lang] = useStorage<string>("targetLan")
   const [modelName] = useStorage<string>("modelName")
+
+  const [translateEngine] = useStorage<string>("engine")
+  const [deeplUrl] = useStorage<string>("deeplUrl")
+  const [deeplApiKey] = useStorage<string>("deeplApiKey")
 
   const panelRef = useClickOutside(onClose)
   const [position, setPosition] = React.useState({ x, y })
@@ -38,6 +42,38 @@ function DraggablePanel({ x, y, query, onClose }) {
     resultRef.current = result
   }, [result])
 
+  const handleSummary = async (query: string) => {
+    let source = await getData(query, url, apiKey, type, lang, modelName)
+    source.addEventListener("message", (e: any) => {
+      if (e.data != "[DONE]") {
+        let payload = JSON.parse(e.data)
+        let text = payload.choices[0].delta.content
+        if (text !== undefined) {
+          resultRef.current = resultRef.current + text
+          setResult(resultRef.current)
+        }
+      } else {
+        source.close()
+      }
+    })
+    source.addEventListener("error", (e: any) => {
+      let error = JSON.parse(e.data)
+      setWarning(error.error.message)
+      source.close()
+    })
+    source.stream()
+  }
+
+  const handleTranslate = async (query: string) => {
+    const data = await onlyTranslate(query, deeplUrl, deeplApiKey, lang)
+
+    if (data.error) {
+      setWarning(data.error)
+      return
+    }
+    setResult(data.data)
+  }
+
   React.useEffect(() => {
     setWarning("")
     if (url === undefined) return
@@ -49,34 +85,20 @@ function DraggablePanel({ x, y, query, onClose }) {
       setWarning("Please select more than one word!")
       return
     }
-    ;(async function () {
-      if (query === "") return
-      let source = await getData(query, url, apiKey, type, lang, modelName)
-      source.addEventListener("message", (e: any) => {
-        if (e.data != "[DONE]") {
-          let payload = JSON.parse(e.data)
-          let text = payload.choices[0].delta.content
-          if (text !== undefined) {
-            resultRef.current = resultRef.current + text
-            setResult(resultRef.current)
-          }
-        } else {
-          source.close()
-        }
-      })
-      source.addEventListener("error", (e: any) => {
-        let error = JSON.parse(e.data)
-        setWarning(error.error.message)
-        source.close()
-      })
-      source.stream()
-    })()
+
+    if (query === "") return
+
+    if (translateEngine === "deepl" && deeplUrl !== "") {
+      handleTranslate(query)
+    } else {
+      handleSummary(query)
+    }
   }, [url, apiKey, type, lang, modelName])
 
   return (
     <div
       ref={panelRef}
-      className="plasmo-fixed plasmo-flex plasmo-flex-col plasmo-w-64 plasmo-border plasmo-border-gray-400 plasmo-rounded-lg plasmo-shadow-lg plasmo-bg-white plasmo-z-50 plasmo-text-gray-800"
+      className="plasmo-fixed plasmo-flex plasmo-flex-col plasmo-w-96 plasmo-border plasmo-border-gray-400 plasmo-rounded-lg plasmo-shadow-lg plasmo-bg-white plasmo-z-50 plasmo-text-gray-800"
       style={{
         left: position.x + "px",
         top: position.y + "px"

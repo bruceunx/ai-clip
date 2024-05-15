@@ -4,7 +4,16 @@ import "~style.css"
 
 import { useStorage } from "@plasmohq/storage/hook"
 
+import { checkState } from "~utils/llm_api"
+
+function formatNumber(num) {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "_")
+}
+
 function IndexPopup() {
+  const [openAIToken, setOpenAIToken] = React.useState<number>(0)
+  const [claudeToken, setClaudeToken] = React.useState<number>(0)
+
   const [url, setUrl] = useStorage("url", "")
   const [apiKey, setApiKey] = useStorage("apiKey", "")
   const [deeplUrl, setDeeplUrl] = useStorage("deeplUrl", "")
@@ -23,6 +32,27 @@ function IndexPopup() {
   const handleRadioChange = (event: any) => {
     setType(event.target.value)
   }
+
+  const refreshAPIStatue = async () => {
+    let openUrl = process.env.PLASMO_PUBLIC_OPENAI_URL
+    let token = process.env.PLASMO_PUBLIC_OPENAI_KEY
+    console.log(openUrl, token)
+    let data = await checkState(openUrl, token, "")
+    if (!data.error) {
+      setOpenAIToken(data.remain_quota)
+    }
+
+    let claudeUrl = process.env.PLASMO_PUBLIC_CLAUDE_URL
+    let cookie = process.env.PLASMO_PUBLIC_CLAUDE_COOKIE
+    data = await checkState(claudeUrl, "", cookie, true)
+    if (!data.error) {
+      setClaudeToken(data.data.quota)
+    }
+  }
+
+  React.useEffect(() => {
+    refreshAPIStatue()
+  }, [])
 
   return (
     <div className="plasmo-bg-gray-100 plasmo-w-80 plasmo-flex-col plasmo-text-gray-700">
@@ -143,6 +173,10 @@ function IndexPopup() {
             <option value="Spanish">Spanish</option>
             <option value="French">French</option>
           </select>
+        </div>
+        <div>
+          <p>OpenAI Status: Remain Token: {formatNumber(openAIToken)}</p>
+          <p>Claude Status: Remain Token: {formatNumber(claudeToken)}</p>
         </div>
       </div>
     </div>

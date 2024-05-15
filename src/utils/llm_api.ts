@@ -74,3 +74,26 @@ export const onlyTranslate = async (
     return { error: "error" }
   }
 }
+
+export const checkState = async (
+  url: string,
+  token: string,
+  cookie: string,
+  useCookie: boolean = false
+) => {
+  let headers = {
+    "Content-Type": "application/json"
+  }
+  if (useCookie) {
+    headers["Cookie"] = cookie
+  } else {
+    headers["Authorization"] = `Bearer ${token}`
+  }
+
+  const res = await fetch(url, { method: "GET", headers: headers })
+  if (res.status === 200) {
+    return res.json()
+  } else {
+    return { error: "error" }
+  }
+}

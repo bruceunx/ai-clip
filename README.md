@@ -4,6 +4,12 @@
   <img width="100" height="100" src="./assets/icon.png" />
 </p>
 
+## INSTALL
+
+[AI-Clip](https://chromewebstore.google.com/detail/aoccgcldllpapbjlflmlabgafijcpoak)
+
+[![Chrome Web Store](https://badgen.net/chrome-web-store/users/aoccgcldllpapbjlflmlabgafijcpoak?icon=chrome&color=0f9d58)](https://chromewebstore.google.com/detail/aoccgcldllpapbjlflmlabgafijcpoak)
+
 ## Description
 
 AI Clip is a browser extension that allows you to translate text from one language to another and summarize text in another language. It uses llms model like (gpt-3.5 from OpenAI, llama3-8b from groq, etc) to translate and summarize text.

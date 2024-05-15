@@ -1,7 +1,7 @@
 {
   "name": "ai-clip",
   "displayName": "Ai clip",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "AI-Clip is an extension helper for quick translator and summarizer",
   "author": "bruceunx@gmail.com",
   "scripts": {

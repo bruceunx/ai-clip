@@ -21,6 +21,7 @@ AI Clip is a browser extension that allows you to translate text from one langua
 ### TODO
 
 - [x] Add Target Language
+- [ ] Add Deepl support for precise translation
 - ~~[ ] Add Dictionary Support?~~
 
 ## Making production build

@@ -22,10 +22,6 @@ const PlasmoOverlay = () => {
   const [query, setQuery] = React.useState<string>("")
 
   const clearSelection = () => {
-    var selection = window.getSelection()
-    if (selection.rangeCount > 0) {
-      selection.removeAllRanges()
-    }
     setSelectedText("")
     setQuery("")
     previewText = ""
